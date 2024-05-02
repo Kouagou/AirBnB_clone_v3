@@ -3,7 +3,7 @@
 Handle all default RESTFull API actions for State class.
 """
 from api.v1.views import app_views
-from flask import jsonify, make_response, abort, request
+from flask import jsonify, abort, request
 from models import storage
 from models.state import State
 
@@ -34,20 +34,20 @@ def delete(state_id):
         abort(404)
     storage.delete(state)
     storage.save()
-    return make_response(jsonify({}), 200)
+    return jsonify({}), 200
 
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
 def create():
     """ Create a State. """
-    if not request.get_json():
+    if not request.get_json() or request.content_type != 'application/json':
         return make_response(jsonify({"error": "Not a JSON"}), 400)
     if 'name' not in request.get_json():
         return make_response(jsonify({"error": "Missing name"}), 400)
     req = request.get_json()
     state = State(**req)
     state.save()
-    return make_response(jsonify(state.to_dict()), 201)
+    return jsonify(state.to_dict()), 201
 
 
 @app_views.route('/states/<string:state_id>', methods=['PUT'],
@@ -63,4 +63,4 @@ def update(state_id):
         if key not in ['id', 'created_at', 'updated']:
             setattr(state, key, value)
     storage.save()
-    return make_response(jsonify(state.to_dict()), 200)
+    return jsonify(state.to_dict()), 200
