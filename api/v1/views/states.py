@@ -9,14 +9,14 @@ from models.state import State
 
 
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
-def all():
+def all_states():
     """ Retrieve the list of all State objects. """
     states = [state.to_dict() for state in storage.all("State").values()]
     return jsonify(states)
 
 
 @app_views.route('/states/<string:state_id>', methods=['GET'])
-def one(state_id):
+def one_state(state_id):
     """ Retrieve a State object. """
     state = storage.get(State, state_id)
     if state is None:
@@ -25,7 +25,7 @@ def one(state_id):
 
 
 @app_views.route('/states/<string:state_id>', methods=['DELETE'])
-def delete(state_id):
+def delete_state(state_id):
     """ Delete a State object. """
     state = storage.get(State, state_id)
     if state is None:
@@ -36,7 +36,7 @@ def delete(state_id):
 
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
-def create():
+def create_state():
     """ Create a State. """
     if not request.get_json():
         abort(400, description="Not a JSON")
@@ -49,7 +49,7 @@ def create():
 
 
 @app_views.route('/states/<string:state_id>', methods=['PUT'])
-def update(state_id):
+def update_state(state_id):
     """ Update a State. """
     if not request.get_json():
         abort(400, description="Not a JSON")
